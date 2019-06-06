@@ -1,19 +1,62 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
+import { AngularMaterialSchedulerService } from './angular-material-scheduler.service';
 
 @Component({
-  selector: 'lib-angular-material-scheduler',
-  template: `
-    <p>
-      angular-material-scheduler works!
-    </p>
-  `,
-  styles: []
+    selector: 'angular-material-scheduler',
+    templateUrl: "./angular-material-scheduler.component.html",
+    styleUrls: ['./angular-material-scheduler.component.scss']
 })
-export class AngularMaterialSchedulerComponent implements OnInit {
+export class AngularMaterialSchedulerComponent implements OnInit, AfterViewInit
+{
+    /**
+     * Defines the kind of view the library is going to show. By default month view.
+     */
+    @Input() view: 'year' | 'month' | 'week' | 'day' = "month";
 
-  constructor() { }
+    /**
+     * Defines the locales the currentDate will use. By default the library uses en-us.
+     * For additional information about the posible locales, please visit: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl#Locale_identification_and_negotiation
+     */
+    @Input() locale: string = "en-us";
 
-  ngOnInit() {
-  }
+    /**
+     * Defines if the views have to start at sunday or monday. By default, true
+     */
+    @Input() startsOnSunday = true;
+
+    /**
+     * Defines the array of "Events" the calendar will show.
+     */
+    @Input() shifts: Array<any>;
+
+    /**
+     * Defines the date that the calendar will use. If no argument is passed through the input. It will uses Date();
+     */
+    @Input() date: Date = new Date();
+
+    //TODO: Here I have to add support for momentjs dates.
+
+    public _currentDate: Date;
+
+    constructor(private ams: AngularMaterialSchedulerService)
+    {}
+
+    ngOnInit()
+    {
+    }
+
+    ngAfterViewInit()
+    {
+        // Check if the input value is ok.
+        if (this.date instanceof Date)
+            // Configure the current date
+            this._currentDate = this.date;
+    }
+
+    public getCurrentMontName(): string
+    {
+        if (this.ams.checkIfCanUseIntlFormatter())
+            return this.ams.formatDate(this._currentDate, this.locale, {month: "long"})
+    }
 
 }

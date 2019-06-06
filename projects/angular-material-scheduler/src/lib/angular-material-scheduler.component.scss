@@ -1,0 +1,19 @@
+::ng-deepangular-material-scheduler{
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0px;
+    min-height: 100%;
+}
+.ams-month-label{
+    text-transform: capitalize;
+}
+.ams-controls-holder{
+    display: flex;
+    flex-direction: row;
+    min-height: 50px;
+}
+.ams-view-wrapper{
+    display: flex;
+    flex: 1 1 0px;
+    flex-direction: row;
+}
