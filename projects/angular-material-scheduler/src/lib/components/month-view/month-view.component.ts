@@ -38,6 +38,8 @@ export class MonthViewComponent implements OnInit
 
         // First of all we have to know on which day starts the month because we need to
         // left some space blank at the begining or at the end.
+        // var d=new Date();
+        // console.log(d.getDay());
 
         // NOTE!!! Think aabout we have a parameter that indicates if the week starts on mondey or not.
         // this will cause the next step harder to do.
