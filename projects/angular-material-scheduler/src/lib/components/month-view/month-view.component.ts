@@ -29,6 +29,11 @@ export class MonthViewComponent implements OnInit
      */
     public weekDaysLabel: Array<string>;
 
+    /** 
+     * Defines the structure to iterate on the component view.
+    */
+    public monthStruct: Array<Array<number>> = [];
+
     constructor(private ams: AngularMaterialSchedulerService)
     {}
 
@@ -38,8 +43,41 @@ export class MonthViewComponent implements OnInit
 
         // First of all we have to know on which day starts the month because we need to
         // left some space blank at the begining or at the end.
-        // var d=new Date();
-        // console.log(d.getDay());
+        const firstOfMonth = new Date();
+        firstOfMonth.setFullYear(this.date.getFullYear(), this.date.getMonth(), 1);
+        const lastOfMonth = new Date();
+        lastOfMonth.setFullYear(this.date.getFullYear(), this.date.getMonth() + 1, 0);
+
+        // date.getDay() -1 gives us the number of whitespaces from the start to the day.
+        // if we keep in mind that the week can start on sunday it will be -0.
+        let startPos = firstOfMonth.getDay() - (this.startOnSunday ? -1 : 0);
+
+        // Fill the spaces on the week
+        let week = Array(startPos - 1);
+        week.fill(0, 0, startPos -1);
+        //week.fill(1, startPos - 1, startPos);
+        
+        //console.log(week);
+
+        // Let's build the structure.
+        startPos-=1;
+        for (let i = 1; i <= lastOfMonth.getDate(); i++)
+        {
+            const offset = startPos + i; // This is because we have to mantain a reference on which position the month begins.
+            // We arrived at the end of the week.
+            if((offset % 7) == 0 || i == lastOfMonth.getDate())
+            {
+                week.push(i);
+                this.monthStruct.push(week);
+                week = [];
+            }
+            else
+            {
+                week.push(i);
+            }
+        }
+
+        console.log("Builded month: ", this.monthStruct);
 
         // NOTE!!! Think aabout we have a parameter that indicates if the week starts on mondey or not.
         // this will cause the next step harder to do.
