@@ -1,8 +1,25 @@
 <div class="ams-month-view-label-row">
     <div class="ams-month-view-day" *ngFor="let day of weekDaysLabel">{{day}}</div>
 </div>
-<div class="ams-month-view-row" *ngFor="let week of monthStruct">
+<div class="ams-month-view-row" *ngFor="let week of this.monthStruct">
     <div *ngFor="let day of week" class="ams-month-view-day ams-month-view-day-button">
-        <div *ngIf="day" class="ams-month-view-day-content" matRipple>{{day}}</div>
+        <div *ngIf="day" class="ams-month-view-day-content" (click)="DayClickedOnView(day, ams.findShiftsForSpecificDay(day, shifts))" matRipple>
+            <div class="ams-month-view-day-label">{{ day.getDate() }}</div>
+            <ng-container *ngIf="day">
+                <!-- SHIFTS -->
+                <ng-container *ngIf="ams.findShiftsForSpecificDay(day, shifts); let shifts">
+                    <div class="ams-month-view-day-event" matRipple (click)="DayEventClickedOnView($event, day, shifts[0]);" *ngIf="shifts.length > 0">
+                        <div class="ams-month-view-day-event-label">
+                            {{shifts[0].title}}
+                        </div>
+                    </div>
+                    <div class="ams-month-view-day-event" matRipple *ngIf="shifts.length > 1">
+                        <div class="ams-month-view-day-event-label">
+                            {{shifts.length - 1}}+ ...
+                        </div>
+                    </div>
+                </ng-container>
+            </ng-container>
+        </div>
     </div>
 </div>

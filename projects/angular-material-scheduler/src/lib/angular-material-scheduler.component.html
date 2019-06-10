@@ -5,6 +5,13 @@
 </div>
 <div class="ams-view-wrapper">
     <ng-container [ngSwitch]="view">
-        <angular-material-scheduler-month-view [locale]="locale" [startOnSunday]="startsOnSunday" *ngSwitchCase="'month'"></angular-material-scheduler-month-view>
+        <angular-material-scheduler-month-view 
+            [locale]="locale"
+            [startOnSunday]="startsOnSunday"
+            [shifts]="shifts"
+            *ngSwitchCase="'month'"
+            (DayClicked)="DayClicked.emit($event)"
+            (DayEventClicked)="DayEventClicked.emit($event)">
+        </angular-material-scheduler-month-view>
     </ng-container>
 </div>

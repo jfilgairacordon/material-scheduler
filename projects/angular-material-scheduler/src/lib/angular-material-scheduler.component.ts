@@ -1,5 +1,7 @@
-import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { AngularMaterialSchedulerService } from './angular-material-scheduler.service';
+import { CalendarShift } from './models/shift.model';
+import { IAMSDayClicked, IAMSDayEventClicked } from './models/month-events.interface';
 
 @Component({
     selector: 'angular-material-scheduler',
@@ -27,12 +29,23 @@ export class AngularMaterialSchedulerComponent implements OnInit, AfterViewInit
     /**
      * Defines the array of "Events" the calendar will show.
      */
-    @Input() shifts: Array<any>;
+    @Input() shifts: Array<CalendarShift>;
 
     /**
      * Defines the date that the calendar will use. If no argument is passed through the input. It will uses Date();
      */
     @Input() date: Date = new Date();
+
+    /**
+     * Dispatches the dayclick event from the different views across the library.
+     */
+    @Output() DayClicked = new EventEmitter<IAMSDayClicked>();
+
+    /**
+     * Defines the event called on a specific shift.
+     */
+    @Output() DayEventClicked = new EventEmitter<IAMSDayEventClicked>();
+
 
     //TODO: Here I have to add support for momentjs dates.
 

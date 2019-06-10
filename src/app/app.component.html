@@ -1,3 +1,9 @@
 <div style="width: 500px; height: 500px;">
-    <angular-material-scheduler [locale]="'es-es'" [startsOnSunday]="true"></angular-material-scheduler>
+    <angular-material-scheduler
+        [locale]="'es-es'"
+        [startsOnSunday]="false"
+        [shifts]="shifts"
+        (DayClicked)="alertContent($event)"
+        (DayEventClicked)="alertContent($event)">
+    </angular-material-scheduler>
 </div>
