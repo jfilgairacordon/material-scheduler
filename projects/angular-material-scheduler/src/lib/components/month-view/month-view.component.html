@@ -8,7 +8,7 @@
             <ng-container *ngIf="day">
                 <!-- SHIFTS -->
                 <ng-container *ngIf="ams.findShiftsForSpecificDay(day, shifts); let shifts">
-                    <div class="ams-month-view-day-event" matRipple (click)="DayEventClickedOnView($event, day, shifts[0]);" *ngIf="shifts.length > 0">
+                    <div class="ams-month-view-day-event {{shifts[0].cssClass}}" matRipple (click)="DayEventClickedOnView($event, day, shifts[0]);" *ngIf="shifts.length > 0">
                         <div class="ams-month-view-day-event-label">
                             {{shifts[0].title}}
                         </div>

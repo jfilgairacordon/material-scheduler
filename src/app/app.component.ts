@@ -28,7 +28,8 @@ export class AppComponent
         {
             title: "Lectura",
             dateIni: new Date(2019, 5, 11, 10, 10),
-            dateEnd: new Date(2019, 5, 11, 11, 0)
+            dateEnd: new Date(2019, 5, 11, 11, 0),
+            cssClass: 'red'
         }
     ] as Array<CalendarShift>;
 
