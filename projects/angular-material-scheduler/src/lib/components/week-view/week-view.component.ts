@@ -53,13 +53,13 @@ export class WeekViewComponent implements OnInit, OnChanges
 
     constructor(public ams: AngularMaterialSchedulerService)
     {
-        this.timeline = Array<{date: Date, hourStr: string, idx: number}>(48).fill(null).map((x, i) => 
+        this.timeline = Array<{date: Date, hourStr: string, idx: number}>(48).fill(null).map((x, i) =>
         {
             let currentDate = new Date();
             currentDate.setHours(0,0,0);
             currentDate = this.ams.increaseHoursToSpecificDate(currentDate, i/2); // Divided by 2 because we wanna step every half hour.
             const hourParts = currentDate.toTimeString().split(":");
-            
+
             return {date: currentDate, hourStr: `${hourParts[0]}:${hourParts[1]}`, idx: i};
         });
     }
@@ -97,7 +97,7 @@ export class WeekViewComponent implements OnInit, OnChanges
         {
             const nextDay = new Date();
             nextDay.setDate(firstOfWeek.getDate() + i);
-            weekStruct.push(nextDay);   
+            weekStruct.push(nextDay);
         }
 
         return weekStruct;
@@ -108,9 +108,12 @@ export class WeekViewComponent implements OnInit, OnChanges
      */
     public calculateShiftForSpecificDay(day: Date, timelineIdx: number, cell: Element): Array<WeekViewShift>
     {
-        const dateIni = day;
-        const dateEnd = this.ams.increaseHoursToSpecificDate(day, TIME_OFFSET_BETWEEN_HOURS_IN_TIMELINE);
-        const shifts = this.ams.findShiftsForSpecificRange(dateIni, dateEnd, this.shifts);
+        day.setHours(0, 0, 0);
+        let dateIni = new Date(day.toDateString()); // Remove ref
+        let dateEnd = new Date(day.toDateString()); // Remove ref
+        dateIni = this.ams.increaseHoursToSpecificDate(dateIni, (timelineIdx/2));
+        dateEnd = this.ams.increaseHoursToSpecificDate(dateEnd, (timelineIdx/2) + TIME_OFFSET_BETWEEN_HOURS_IN_TIMELINE);
+        const shifts = this.ams.findShiftsForSpecificRangeOfHours(dateIni, dateEnd, this.shifts);
         const preparedShifts: Array<WeekViewShift> = [];
 
         shifts.forEach(x =>
@@ -125,11 +128,11 @@ export class WeekViewComponent implements OnInit, OnChanges
                 dateIni: x.dateIni,
                 dateEnd: x.dateEnd,
                 title: x.title,
-                top: timelineIdx * TIMELINE_OFFSET_TOP_SPACE_BETWEEN_HOURS,
-                left: 0,
                 width: 80,
                 height: 50 // TODO: Calculate using the comment
             } as WeekViewShift;
+
+            preparedShifts.push(preparedShift);
         });
 
         return preparedShifts;

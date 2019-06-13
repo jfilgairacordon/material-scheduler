@@ -46,6 +46,21 @@ export class AngularMaterialSchedulerService
         else
             return [];
     }
+    public findShiftsForSpecificRangeOfHours(dateIni: Date, dateEnd: Date, shifts: Array<CalendarShift>): Array<CalendarShift>
+    {
+        if (shifts)
+        {
+            const filteredShifts = shifts.filter(shift =>
+            {
+                if (dateIni.getTime() <= shift.dateIni.getTime() && dateEnd.getTime() >= shift.dateIni.getTime())
+                    return shift;
+            });
+
+            return filteredShifts;
+        }
+        else
+            return [];
+    }
     public formatDate(date: Date, locale: string, format: Intl.DateTimeFormatOptions): string
     {
         const formatter = new Intl.DateTimeFormat(locale, format);
