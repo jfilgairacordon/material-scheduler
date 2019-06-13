@@ -13,6 +13,39 @@ export class AngularMaterialSchedulerService
     {
         return (typeof Intl == 'object' && typeof Intl.DateTimeFormat == 'function')
     }
+    public findShiftsForSpecificDay(dateToFind: Date, shifts: Array<CalendarShift>): Array<CalendarShift>
+    {
+        if (shifts)
+        {
+            const dateToFindIni = new Date();
+            dateToFindIni.setFullYear(dateToFind.getFullYear(), dateToFind.getMonth(), dateToFind.getDate());
+            dateToFindIni.setHours(0, 0, 0);
+            const dateToFindEnd = new Date();
+            dateToFindEnd.setFullYear(dateToFind.getFullYear(), dateToFind.getMonth(), dateToFind.getDate());
+            dateToFindEnd.setHours(23, 59, 59);
+
+            return this.findShiftsForSpecificRange(dateToFindIni, dateToFindEnd, shifts);
+        }
+        else
+        {
+            return [];
+        }
+    }
+    public findShiftsForSpecificRange(dateIni: Date, dateEnd: Date, shifts: Array<CalendarShift>): Array<CalendarShift>
+    {
+        if (shifts)
+        {
+            const filteredShifts = shifts.filter(shift =>
+            {
+                if (dateIni.getTime() <= shift.dateIni.getTime() && dateEnd.getTime() >= shift.dateEnd.getTime())
+                    return shift;
+            });
+
+            return filteredShifts;
+        }
+        else
+            return [];
+    }
     public formatDate(date: Date, locale: string, format: Intl.DateTimeFormatOptions): string
     {
         const formatter = new Intl.DateTimeFormat(locale, format);
@@ -32,29 +65,39 @@ export class AngularMaterialSchedulerService
 
         return weekDays;
     }
-    public findShiftsForSpecificDay(dateToFind: Date, shifts: Array<CalendarShift>): Array<CalendarShift>
+    public getScrollbarWidth(): number
     {
-        if (shifts)
-        {
-            const dateToFindIni = new Date();
-            dateToFindIni.setFullYear(dateToFind.getFullYear(), dateToFind.getMonth(), dateToFind.getDate());
-            dateToFindIni.setHours(0, 0, 0);
-            const dateToFindEnd = new Date();
-            dateToFindEnd.setFullYear(dateToFind.getFullYear(), dateToFind.getMonth(), dateToFind.getDate());
-            dateToFindEnd.setHours(23, 59, 59);
+        const outer = document.createElement("div");
+        outer.style.visibility = "hidden";
+        outer.style.width = "100px";
+        outer.style.msOverflowStyle = "scrollbar"; // needed for WinJS apps
 
+        document.body.appendChild(outer);
 
-            const filteredShifts = shifts.filter(shift =>
-            {
-                if (dateToFindIni.getTime() <= shift.dateIni.getTime() && dateToFindEnd.getTime() >= shift.dateEnd.getTime())
-                    return shift;
-            });
+        var widthNoScroll = outer.offsetWidth;
+        // force scrollbars
+        outer.style.overflow = "scroll";
 
-            return filteredShifts;
-        }
-        else
-        {
-            return [];
-        }
+        // add innerdiv
+        var inner = document.createElement("div");
+        inner.style.width = "100%";
+        outer.appendChild(inner);
+
+        var widthWithScroll = inner.offsetWidth;
+
+        // remove divs
+        outer.parentNode.removeChild(outer);
+
+        return widthNoScroll - widthWithScroll;
+    }
+    public getShortDayNameForSpecificDay(date: Date, locale: string): String
+    {
+        return this.formatDate(date, locale, { weekday: "short" });
+    }
+    public increaseHoursToSpecificDate(date: Date, hourAmount: number): Date
+    {
+        date.setTime(date.getTime() + (hourAmount * 60 * 60 * 1000));
+
+        return date;
     }
 }

@@ -1,11 +1,23 @@
-<div class="ams-controls-holder">
-    <button mat-icon-button><mat-icon>keyboard_arrow_left</mat-icon></button>
-    <button mat-icon-button><mat-icon>keyboard_arrow_right</mat-icon></button>
-    <button mat-button class="ams-month-label">{{ getCurrentMontName() }}</button>
-</div>
+
+<ng-container [ngSwitch]="view">
+    <div class="ams-controls-holder" *ngSwitchCase="'month'">
+        <button mat-icon-button><mat-icon>keyboard_arrow_left</mat-icon></button>
+        <button mat-icon-button><mat-icon>keyboard_arrow_right</mat-icon></button>
+        <button mat-button class="ams-month-label">{{ getCurrentMontName() }}</button>
+    </div>
+</ng-container>
 <div class="ams-view-wrapper">
     <ng-container [ngSwitch]="view">
+        <angular-material-scheduler-week-view
+            *ngSwitchCase="'week'"
+            [date]="date"
+            [locale]="locale"
+            [startOnSunday]="startsOnSunday"
+            [shifts]="shifts">
+
+        </angular-material-scheduler-week-view>
         <angular-material-scheduler-month-view 
+            [date]="date"
             [locale]="locale"
             [startOnSunday]="startsOnSunday"
             [shifts]="shifts"

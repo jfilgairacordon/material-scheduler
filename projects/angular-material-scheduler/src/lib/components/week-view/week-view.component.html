@@ -1,0 +1,17 @@
+<div class="ams-week-view-label-row" [style.paddingRight.px]="scrollBarOffset">
+    <div class="ams-week-view-day"></div>
+    <div class="ams-week-view-day" *ngFor="let day of weekStruct">
+        <div>{{ams.getShortDayNameForSpecificDay(day, locale)}}</div>
+        <div>{{day.getDate()}}</div>
+    </div>
+</div>
+<div class="ams-week-view-timeline">
+    <div class="ams-week-view-timeline-container">
+        <div class="ams-week-view-timeline-row" *ngFor="let timeDef of timeline">
+            <div class="ams-week-view-timeline-column">{{timeDef.hourStr}}</div>
+            <div class="ams-week-view-timeline-column" *ngFor="let day of weekStruct">
+                
+            </div>
+        </div>
+    </div>
+</div>

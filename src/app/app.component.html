@@ -1,7 +1,18 @@
 <div style="width: 100%; height: 500px; display: flex;">
     <angular-material-scheduler
         [locale]="'es-es'"
-        [startsOnSunday]="false"
+        [view]="'week'"
+        [startsOnSunday]="true"
+        [shifts]="shifts"
+        (DayClicked)="alertContent($event)"
+        (DayEventClicked)="alertContent($event)">
+    </angular-material-scheduler>
+</div>
+<div style="width: 100%; height: 500px; display: flex;">
+    <angular-material-scheduler
+        [locale]="'es-es'"
+        [view]="'month'"
+        [startsOnSunday]="true"
         [shifts]="shifts"
         (DayClicked)="alertContent($event)"
         (DayEventClicked)="alertContent($event)">
