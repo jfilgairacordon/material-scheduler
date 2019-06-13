@@ -10,7 +10,13 @@
         <div class="ams-week-view-timeline-row" *ngFor="let timeDef of timeline">
             <div class="ams-week-view-timeline-column">{{timeDef.hourStr}}</div>
             <div class="ams-week-view-timeline-column" *ngFor="let day of weekStruct">
-                
+                <ng-container *ngIf="calculateShiftForSpecificDay(day, timeDef.idx, null); let dayShifts">
+                    <div *ngFor="let shift of dayShifts" class="ams-week-view-timeline-event"
+                        [style.width.px]="shift.width"
+                        [style.height.px]="shift.height">
+                        {{ shift.title }}
+                    </div>
+                </ng-container>
             </div>
         </div>
     </div>
