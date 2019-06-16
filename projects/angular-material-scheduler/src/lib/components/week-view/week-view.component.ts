@@ -95,7 +95,7 @@ export class WeekViewComponent implements OnInit, OnChanges
         // Now iterate over the week's days and mount the structure.
         for (let i = 1; i < 7; i++)
         {
-            const nextDay = new Date();
+            const nextDay = new Date(firstOfWeek.toDateString());
             nextDay.setDate(firstOfWeek.getDate() + i);
             weekStruct.push(nextDay);
         }
