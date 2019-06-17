@@ -2,6 +2,7 @@ import { Component, OnInit, Input, AfterViewInit, Output, EventEmitter } from '@
 import { AngularMaterialSchedulerService } from './angular-material-scheduler.service';
 import { CalendarShift } from './models/shift.model';
 import { IAMSDayClicked, IAMSDayEventClicked } from './models/month-events.interface';
+import { IAMSWeekViewEventClicked, IAMSWeekViewEventRemove } from './models/week-events.interface';
 
 @Component({
     selector: 'angular-material-scheduler',
@@ -37,6 +38,12 @@ export class AngularMaterialSchedulerComponent implements OnInit, AfterViewInit
     @Input() date: Date = new Date();
 
     /**
+     * Defines if the view has to hide the day labels (numbers below the week days).
+     * By default false.
+     */
+    @Input() hideWeekViewDayLabel: boolean = false;
+
+    /**
      * Dispatches the dayclick event from the different views across the library.
      */
     @Output() DayClicked = new EventEmitter<IAMSDayClicked>();
@@ -46,6 +53,15 @@ export class AngularMaterialSchedulerComponent implements OnInit, AfterViewInit
      */
     @Output() DayEventClicked = new EventEmitter<IAMSDayEventClicked>();
 
+    /**
+     * Defines the event called on a specific shift.
+     */
+    @Output() WeekEventClicked = new EventEmitter<IAMSWeekViewEventClicked>();
+
+    /**
+     * Defines the event called on a specific shift's remove button.
+     */
+    @Output() WeekEventRemove = new EventEmitter<IAMSWeekViewEventRemove>();
 
     //TODO: Here I have to add support for momentjs dates.
 

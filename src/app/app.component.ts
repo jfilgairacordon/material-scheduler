@@ -9,6 +9,7 @@ import { CalendarShift } from 'angular-material-scheduler/public-api';
 export class AppComponent
 {
     title = 'material-scheduler';
+    date = new Date(2019, 3, 1);
     shifts = [
         {
             title: "Evento 1",
