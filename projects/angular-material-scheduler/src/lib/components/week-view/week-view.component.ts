@@ -146,6 +146,7 @@ export class WeekViewComponent implements OnInit, OnChanges
             let height = (heightFactor * TIMELINE_OFFSET_TOP_SPACE_BETWEEN_HOURS);
             height = height < TIMELINE_OFFSET_TOP_SPACE_BETWEEN_HOURS ? TIMELINE_OFFSET_TOP_SPACE_BETWEEN_HOURS : height;
             const preparedShift = {
+                id: x.id,
                 dateIni: x.dateIni,
                 dateEnd: x.dateEnd,
                 title: x.title,
