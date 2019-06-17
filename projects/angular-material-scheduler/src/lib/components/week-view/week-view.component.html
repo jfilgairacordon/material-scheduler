@@ -3,7 +3,7 @@
     <div class="ams-week-view-day" *ngFor="let day of weekStruct">
         <div class="ams-week-view-timeline-event-content">
             <div>{{ams.getShortDayNameForSpecificDay(day, locale)}}</div>
-            <div>{{day.getDate()}}</div>
+            <div *ngIf="!hideWeekViewDayLabel">{{day.getDate()}}</div>
         </div>
     </div>
 </div>
@@ -15,10 +15,21 @@
             </div>
             <div class="ams-week-view-timeline-column ams-pad0" *ngFor="let day of weekStruct">
                 <ng-container *ngIf="calculateShiftForSpecificDay(day, timeDef.idx, null); let dayShifts">
-                    <div *ngFor="let shift of dayShifts" class="ams-week-view-timeline-event {{shift.cssClass}}"
+                    <div
+                        (mouseover)="delete.style.visibility = 'visible'"
+                        (mouseout)="delete.style.visibility = 'hidden'"
+                        *ngFor="let shift of dayShifts;let i = index; trackBy: identy"
+                        class="ams-week-view-timeline-event mat-elevation-z3"
                         [style.width.px]="shift.width"
                         [style.height.px]="shift.height">
-                        <div class="ams-week-view-timeline-event-content">{{ shift.title }}</div>
+                        <div (click)="ShiftClicked(day, shift)" matRipple class="ams-week-view-event-container">
+                            <div class="ams-week-view-timeline-event-content">{{ shift.title }}</div>
+                        </div>
+                        <div #delete class="ams-week-view-event-remove-button">
+                            <button color="warn" (click)="ShiftRemove(shift)" mat-mini-fab>
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
                     </div>
                 </ng-container>
             </div>

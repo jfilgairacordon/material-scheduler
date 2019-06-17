@@ -13,10 +13,13 @@
             [date]="date"
             [locale]="locale"
             [startOnSunday]="startsOnSunday"
-            [shifts]="shifts">
+            [shifts]="shifts"
+            [hideWeekViewDayLabel]="hideWeekViewDayLabel"
+            (WeekEventClicked)="WeekEventClicked.emit($event)"
+            (WeekEventRemove)="WeekEventRemove.emit($event)">
 
         </angular-material-scheduler-week-view>
-        <angular-material-scheduler-month-view 
+        <angular-material-scheduler-month-view
             [date]="date"
             [locale]="locale"
             [startOnSunday]="startsOnSunday"

@@ -39,6 +39,7 @@
     display: flex;
     flex-direction: row;
     min-height: 50px;
+    max-height: 50px; // Restricted by component logic.
 }
 .ams-week-view-timeline-row:nth-child(even)
 {
@@ -55,6 +56,7 @@
     font-size: 11px;
     line-height: 1.4;
     color: white;
+    z-index: 1;
 }
 .ams-week-view-timeline-event-content{
     margin: 6px;
@@ -62,3 +64,22 @@
 .ams-pad0{
     padding: 0!important;
 }
+.ams-week-view-event-container{
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0px;
+    min-height: 100%;
+    z-index: 1;
+    cursor: pointer;
+}
+.ams-week-view-event-remove-button{
+    visibility: hidden;
+    position: absolute;
+    right: -16px;
+    top:-16px;
+    z-index: 2;
+}
+// .ams-week-view-event-container:hover .ams-week-view-event-remove-button
+// {
+//     visibility: visible;
+// }

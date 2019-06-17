@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { CalendarShift } from '../../models/shift.model';
 import { AngularMaterialSchedulerService } from '../../angular-material-scheduler.service';
 import { WeekViewShift } from '../../models/week-view-shift.interface';
+import { IAMSWeekViewEventClicked, IAMSWeekViewEventRemove } from '../../models/week-events.interface';
 
 @Component({
     selector: 'angular-material-scheduler-week-view',
@@ -30,6 +31,22 @@ export class WeekViewComponent implements OnInit, OnChanges
      * Defines the array of events.
      */
     @Input() shifts: Array<CalendarShift>
+
+    /**
+     * Defines if the view has to hide the day labels (numbers below the week days).
+     * By default false.
+     */
+    @Input() hideWeekViewDayLabel: boolean = false;
+
+    /**
+     * Defines the event called on a specific shift.
+     */
+    @Output() WeekEventClicked = new EventEmitter<IAMSWeekViewEventClicked>();
+
+    /**
+     * Defines the event called on a specific shift's remove button.
+     */
+    @Output() WeekEventRemove = new EventEmitter<IAMSWeekViewEventRemove>();
 
     /**
      * Defines the array of labels we wanna iterate.
@@ -140,6 +157,23 @@ export class WeekViewComponent implements OnInit, OnChanges
         });
 
         return preparedShifts;
+    }
+    public identy(index: number, item: CalendarShift): number
+    {
+        return index;
+    }
+    public ShiftClicked(date: Date, shift: CalendarShift): void
+    {
+        this.WeekEventClicked.emit({
+            date: date,
+            shift: shift
+        } as IAMSWeekViewEventClicked);
+    }
+    public ShiftRemove(shift: CalendarShift): void
+    {
+        this.WeekEventRemove.emit({
+            shift: shift
+        } as IAMSWeekViewEventRemove);
     }
 }
 
