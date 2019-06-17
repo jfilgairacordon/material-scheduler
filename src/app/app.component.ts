@@ -22,8 +22,8 @@ export class AppComponent
         },
         {
             title: "Andale Rigoberto",
-            dateIni: new Date(2019, 5, 20, 9, 10),
-            dateEnd: new Date(2019, 5, 20, 22, 0)
+            dateIni: new Date(2019, 5, 20, 9, 0),
+            dateEnd: new Date(2019, 5, 20, 15, 0)
         },
         {
             title: "Lectura",

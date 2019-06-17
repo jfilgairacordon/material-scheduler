@@ -18,7 +18,6 @@
     flex: 1 1 0px;
     min-width: 50px;
     border-right: 1px solid #d4d4d4;
-    padding: 6px;
     position: relative;
 }
 .ams-week-view-column-mar{
@@ -55,6 +54,11 @@
     border-radius: 12px;
     font-size: 11px;
     line-height: 1.4;
-    padding: 6px;
     color: white;
+}
+.ams-week-view-timeline-event-content{
+    margin: 6px;
+}
+.ams-pad0{
+    padding: 0!important;
 }
