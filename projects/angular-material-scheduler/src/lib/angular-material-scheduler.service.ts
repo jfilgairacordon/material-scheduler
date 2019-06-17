@@ -13,6 +13,10 @@ export class AngularMaterialSchedulerService
     {
         return (typeof Intl == 'object' && typeof Intl.DateTimeFormat == 'function')
     }
+    public calculateHoursBetweenTwoDates(dateIni: Date, dateEnd: Date): number
+    {
+        return (((dateEnd.getTime() - dateIni.getTime())/60)/60) / 1000;
+    }
     public findShiftsForSpecificDay(dateToFind: Date, shifts: Array<CalendarShift>): Array<CalendarShift>
     {
         if (shifts)

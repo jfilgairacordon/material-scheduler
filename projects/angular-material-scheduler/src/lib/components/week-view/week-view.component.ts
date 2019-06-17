@@ -111,6 +111,7 @@ export class WeekViewComponent implements OnInit, OnChanges
         day.setHours(0, 0, 0);
         let dateIni = new Date(day.toDateString()); // Remove ref
         let dateEnd = new Date(day.toDateString()); // Remove ref
+        dateEnd = new Date(dateEnd.getTime() - (1 * 60000)); // Substract a minute.
         dateIni = this.ams.increaseHoursToSpecificDate(dateIni, (timelineIdx/2));
         dateEnd = this.ams.increaseHoursToSpecificDate(dateEnd, (timelineIdx/2) + TIME_OFFSET_BETWEEN_HOURS_IN_TIMELINE);
         const shifts = this.ams.findShiftsForSpecificRangeOfHours(dateIni, dateEnd, this.shifts);
@@ -124,12 +125,15 @@ export class WeekViewComponent implements OnInit, OnChanges
             // We have to ensure the value isn't less than the value of the constant.
             // if not equals or greater than that we have to obviate the value
             // and use the constant as height
+            const heightFactor = this.ams.calculateHoursBetweenTwoDates(x.dateIni, x.dateEnd);
+            let height = (heightFactor * TIMELINE_OFFSET_TOP_SPACE_BETWEEN_HOURS);
+            height = height < TIMELINE_OFFSET_TOP_SPACE_BETWEEN_HOURS ? TIMELINE_OFFSET_TOP_SPACE_BETWEEN_HOURS : height;
             const preparedShift = {
                 dateIni: x.dateIni,
                 dateEnd: x.dateEnd,
                 title: x.title,
                 width: 80,
-                height: 50 // TODO: Calculate using the comment
+                height: height // TODO: Calculate using the comment
             } as WeekViewShift;
 
             preparedShifts.push(preparedShift);
@@ -140,4 +144,4 @@ export class WeekViewComponent implements OnInit, OnChanges
 }
 
 export const TIME_OFFSET_BETWEEN_HOURS_IN_TIMELINE = 0.5; // that value is equal 30min.
-export const TIMELINE_OFFSET_TOP_SPACE_BETWEEN_HOURS = 50; // Value in px.
+export const TIMELINE_OFFSET_TOP_SPACE_BETWEEN_HOURS = 100; // Value in px. This because a half hour is equivalent to 50 px

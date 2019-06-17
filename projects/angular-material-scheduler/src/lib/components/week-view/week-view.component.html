@@ -1,20 +1,24 @@
 <div class="ams-week-view-label-row" [style.paddingRight.px]="scrollBarOffset">
     <div class="ams-week-view-day"></div>
     <div class="ams-week-view-day" *ngFor="let day of weekStruct">
-        <div>{{ams.getShortDayNameForSpecificDay(day, locale)}}</div>
-        <div>{{day.getDate()}}</div>
+        <div class="ams-week-view-timeline-event-content">
+            <div>{{ams.getShortDayNameForSpecificDay(day, locale)}}</div>
+            <div>{{day.getDate()}}</div>
+        </div>
     </div>
 </div>
 <div class="ams-week-view-timeline">
     <div class="ams-week-view-timeline-container">
         <div class="ams-week-view-timeline-row" *ngFor="let timeDef of timeline">
-            <div class="ams-week-view-timeline-column">{{timeDef.hourStr}}</div>
-            <div class="ams-week-view-timeline-column" *ngFor="let day of weekStruct">
+            <div class="ams-week-view-timeline-column">
+                <div class="ams-week-view-timeline-event-content">{{timeDef.hourStr}}</div>
+            </div>
+            <div class="ams-week-view-timeline-column ams-pad0" *ngFor="let day of weekStruct">
                 <ng-container *ngIf="calculateShiftForSpecificDay(day, timeDef.idx, null); let dayShifts">
-                    <div *ngFor="let shift of dayShifts" class="ams-week-view-timeline-event"
+                    <div *ngFor="let shift of dayShifts" class="ams-week-view-timeline-event {{shift.cssClass}}"
                         [style.width.px]="shift.width"
                         [style.height.px]="shift.height">
-                        {{ shift.title }}
+                        <div class="ams-week-view-timeline-event-content">{{ shift.title }}</div>
                     </div>
                 </ng-container>
             </div>
