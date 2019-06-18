@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, Output, EventEmitter, ViewChild } from '@angular/core';
 import { CalendarShift } from '../../models/shift.model';
 import { AngularMaterialSchedulerService } from '../../angular-material-scheduler.service';
 import { WeekViewShift } from '../../models/week-view-shift.interface';
@@ -39,6 +39,22 @@ export class WeekViewComponent implements OnInit, OnChanges
     @Input() hideWeekViewDayLabel: boolean = false;
 
     /**
+     * Defines if the view has to scroll to specific hour when it fires onInit event.
+     * The input receives the specific hour as an argument.
+     */
+    @Input() scrollWeekViewToSpecificHourOnInit: number = null;
+
+    /**
+     * Defines if the view has to scroll to the first event when it fires onInit event.
+     */
+    @Input() scrollWeekViewToFirstEventOnInit: boolean = false;
+
+    /**
+     * Defines if the view has to scroll to the changed event
+     */
+    @Input() scrollWeekViewToEventOnChange: boolean = false;
+
+    /**
      * Defines the event called on a specific shift.
      */
     @Output() WeekEventClicked = new EventEmitter<IAMSWeekViewEventClicked>();
@@ -47,6 +63,11 @@ export class WeekViewComponent implements OnInit, OnChanges
      * Defines the event called on a specific shift's remove button.
      */
     @Output() WeekEventRemove = new EventEmitter<IAMSWeekViewEventRemove>();
+
+    /**
+     * Locates the timeline scroll container on the view.
+     */
+    @ViewChild('timeline', {static: true}) timelineScroller: Element;
 
     /**
      * Defines the array of labels we wanna iterate.
@@ -86,6 +107,8 @@ export class WeekViewComponent implements OnInit, OnChanges
         this.weekDaysLabel   = this.ams.getDayNameLabelByLocale(this.locale, this.startOnSunday);
         this.weekStruct      = this.calculateWeekStructure(this.date);
         this.scrollBarOffset = this.ams.getScrollbarWidth();
+
+        console.log(this.timelineScroller);
     }
 
     ngOnChanges(changes: any): void

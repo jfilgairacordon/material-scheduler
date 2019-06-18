@@ -44,6 +44,22 @@ export class AngularMaterialSchedulerComponent implements OnInit, AfterViewInit
     @Input() hideWeekViewDayLabel: boolean = false;
 
     /**
+     * Defines if the view has to scroll to specific hour when it fires onInit event.
+     * The input receives the specific hour as an argument.
+     */
+    @Input() scrollWeekViewToSpecificHourOnInit: number = null;
+
+    /**
+     * Defines if the view has to scroll to the first event when it fires onInit event.
+     */
+    @Input() scrollWeekViewToFirstEventOnInit: boolean = false;
+
+    /**
+     * Defines if the view has to scroll to the changed event
+     */
+    @Input() scrollWeekViewToEventOnChange: boolean = false;
+
+    /**
      * Dispatches the dayclick event from the different views across the library.
      */
     @Output() DayClicked = new EventEmitter<IAMSDayClicked>();
