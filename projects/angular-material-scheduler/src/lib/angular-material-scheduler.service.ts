@@ -84,6 +84,15 @@ export class AngularMaterialSchedulerService
 
         return weekDays;
     }
+    public getFirstOfWeek(date: Date, startOnSunday: boolean): Date
+    {
+        // Delete reference
+        const currentDate = new Date(date.getTime());
+        const offset = currentDate.getDate() - currentDate.getDay() + (startOnSunday ? -1 : 0) + (currentDate.getDay() == 0 ? -6 : 1);
+        const firstOfWeek = new Date(currentDate.setDate(offset));
+
+        return firstOfWeek;
+    }
     public getScrollbarWidth(): number
     {
         const outer = document.createElement("div");
@@ -118,5 +127,10 @@ export class AngularMaterialSchedulerService
         date.setTime(date.getTime() + (hourAmount * 60 * 60 * 1000));
 
         return date;
+    }
+    public scrollContentTo(element: Element, x: number, y: number): void
+    {
+        // TODO: Check if we can anim it.
+        element.scrollTo(x, y);
     }
 }

@@ -1,15 +1,18 @@
-import { Component, OnInit, Input, OnChanges, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, Output, EventEmitter, ViewChild, AfterViewInit, ElementRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CalendarShift } from '../../models/shift.model';
 import { AngularMaterialSchedulerService } from '../../angular-material-scheduler.service';
 import { WeekViewShift } from '../../models/week-view-shift.interface';
 import { IAMSWeekViewEventClicked, IAMSWeekViewEventRemove } from '../../models/week-events.interface';
+import { filter } from 'minimatch';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
 @Component({
     selector: 'angular-material-scheduler-week-view',
     templateUrl: './week-view.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrls: ['./week-view.component.scss']
 })
-export class WeekViewComponent implements OnInit, OnChanges
+export class WeekViewComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy
 {
     /**
      * Defines the date that the view is going to use. If no argument is passed it will uses new Date()
@@ -30,7 +33,10 @@ export class WeekViewComponent implements OnInit, OnChanges
     /**
      * Defines the array of events.
      */
-    @Input() shifts: Array<CalendarShift>
+    @Input() set shifts(shifts: Array<CalendarShift>)
+    {
+        this._shiftsStore.next(shifts);
+    }
 
     /**
      * Defines if the view has to hide the day labels (numbers below the week days).
@@ -67,7 +73,7 @@ export class WeekViewComponent implements OnInit, OnChanges
     /**
      * Locates the timeline scroll container on the view.
      */
-    @ViewChild('timeline', {static: true}) timelineScroller: Element;
+    @ViewChild('timelineScroller', {static: true}) timelineScroller: ElementRef;
 
     /**
      * Defines the array of labels we wanna iterate.
@@ -89,6 +95,16 @@ export class WeekViewComponent implements OnInit, OnChanges
      */
     public timeline: Array<{date: Date, hourStr: string, idx: number}>;
 
+    /**
+     * Defines where the shifts will live.
+     */
+    private _shiftsStore = new BehaviorSubject<Array<CalendarShift>>([]);
+
+    /**
+     * It stores the subscription for shift changes. It has to be destroyend on ngDestroy cycle.
+     */
+    private _subscription: Subscription;
+
     constructor(public ams: AngularMaterialSchedulerService)
     {
         this.timeline = Array<{date: Date, hourStr: string, idx: number}>(48).fill(null).map((x, i) =>
@@ -107,8 +123,12 @@ export class WeekViewComponent implements OnInit, OnChanges
         this.weekDaysLabel   = this.ams.getDayNameLabelByLocale(this.locale, this.startOnSunday);
         this.weekStruct      = this.calculateWeekStructure(this.date);
         this.scrollBarOffset = this.ams.getScrollbarWidth();
+    }
 
-        console.log(this.timelineScroller);
+    ngAfterViewInit(): void
+    {
+        this.handleScrollToSpecificHour();
+        this.handleScrollToFirstEventOnInit();
     }
 
     ngOnChanges(changes: any): void
@@ -120,27 +140,10 @@ export class WeekViewComponent implements OnInit, OnChanges
         }
     }
 
-    /**
-     * Build and returns the week structured. It will be used on the view.
-     */
-    private calculateWeekStructure(date: Date): Array<Date>
+    ngOnDestroy(): void
     {
-        // Given an specific date, let's take the current week.
-        // then, calculate which is its first day.
-        const weekStruct: Array<Date> = [];
-        const offset = date.getDate() - date.getDay() + (this.startOnSunday ? -1 : 0) + (date.getDay() == 0 ? -6 : 1);
-        const firstOfWeek = new Date(date.setDate(offset));
-        weekStruct.push(firstOfWeek);
-
-        // Now iterate over the week's days and mount the structure.
-        for (let i = 1; i < 7; i++)
-        {
-            const nextDay = new Date(firstOfWeek.toDateString());
-            nextDay.setDate(firstOfWeek.getDate() + i);
-            weekStruct.push(nextDay);
-        }
-
-        return weekStruct;
+        if (this._subscription)
+            this._subscription.unsubscribe();
     }
 
     /**
@@ -154,7 +157,7 @@ export class WeekViewComponent implements OnInit, OnChanges
         dateEnd = new Date(dateEnd.getTime() - (1 * 60000)); // Substract a minute.
         dateIni = this.ams.increaseHoursToSpecificDate(dateIni, (timelineIdx/2));
         dateEnd = this.ams.increaseHoursToSpecificDate(dateEnd, (timelineIdx/2) + TIME_OFFSET_BETWEEN_HOURS_IN_TIMELINE);
-        const shifts = this.ams.findShiftsForSpecificRangeOfHours(dateIni, dateEnd, this.shifts);
+        const shifts = this.ams.findShiftsForSpecificRangeOfHours(dateIni, dateEnd, this._shiftsStore.value);
         const preparedShifts: Array<WeekViewShift> = [];
 
         shifts.forEach(x =>
@@ -182,10 +185,16 @@ export class WeekViewComponent implements OnInit, OnChanges
 
         return preparedShifts;
     }
+    /**
+     * Used to identify the elements on the *ngFor.
+     */
     public identy(index: number, item: CalendarShift): number
     {
         return index;
     }
+    /**
+     * Fires the shift clicked event to the parent.
+     */
     public ShiftClicked(date: Date, shift: CalendarShift): void
     {
         this.WeekEventClicked.emit({
@@ -193,11 +202,76 @@ export class WeekViewComponent implements OnInit, OnChanges
             shift: shift
         } as IAMSWeekViewEventClicked);
     }
+    /**
+     * Fires the shift removed event to the parent.
+     */
     public ShiftRemove(shift: CalendarShift): void
     {
         this.WeekEventRemove.emit({
             shift: shift
         } as IAMSWeekViewEventRemove);
+    }
+
+    /**
+     * Build and returns the week structured. It will be used on the view.
+     */
+    private calculateWeekStructure(date: Date): Array<Date>
+    {
+        // Given an specific date, let's take the current week.
+        // then, calculate which is its first day.
+        const weekStruct: Array<Date> = [];
+        const firstOfWeek = this.ams.getFirstOfWeek(date, this.startOnSunday);
+        weekStruct.push(firstOfWeek);
+
+        // Now iterate over the week's days and mount the structure.
+        for (let i = 1; i < 7; i++)
+        {
+            const nextDay = new Date(firstOfWeek.toDateString());
+            nextDay.setDate(firstOfWeek.getDate() + i);
+            weekStruct.push(nextDay);
+        }
+
+        return weekStruct;
+    }
+    /**
+     * Handle if the view has to scroll to the first event on view has init.
+     */
+    private handleScrollToFirstEventOnInit(): void
+    {
+        if (this.scrollWeekViewToFirstEventOnInit && this._shiftsStore.value.length > 0)
+        {
+            // Find the shifts that are inside this week.
+            const firstOfWeek = this.ams.getFirstOfWeek(this.date, this.startOnSunday);
+
+            // Configure the dates and its hours to find the shifts for that week.
+            firstOfWeek.setHours(0, 0, 0);
+            let endOfWeek = new Date(firstOfWeek.getTime());
+            endOfWeek.setHours(23,59,59);
+            endOfWeek = this.ams.increaseHoursToSpecificDate(endOfWeek, 24 * 6);
+
+            // Filter the shifts array and try to scroll to the first one.
+            const filteredShifts = this.ams.findShiftsForSpecificRange(firstOfWeek, endOfWeek, this._shiftsStore.value);
+            if (filteredShifts.length > 0)
+            {
+                const firstShift = filteredShifts[0];
+                const domShift = document.getElementById(`${firstShift.id}`)
+                if (domShift)
+                {
+                    this.ams.scrollContentTo(this.timelineScroller.nativeElement, 0, domShift.parentElement.parentElement.offsetTop - (TIMELINE_OFFSET_TOP_SPACE_BETWEEN_HOURS / 2));
+                }
+            }
+        }
+    }
+    private handleScrollToSpecificHour(): void
+    {
+        if (this.scrollWeekViewToSpecificHourOnInit)
+        {
+            const hourToScroll = document.getElementById(this.scrollWeekViewToSpecificHourOnInit.toString());
+            if (hourToScroll)
+            {
+                this.ams.scrollContentTo(this.timelineScroller.nativeElement, 0, hourToScroll.offsetTop - (TIMELINE_OFFSET_TOP_SPACE_BETWEEN_HOURS / 2));
+            }
+        }
     }
 }
 

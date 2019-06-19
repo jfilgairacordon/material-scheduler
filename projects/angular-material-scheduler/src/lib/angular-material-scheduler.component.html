@@ -14,6 +14,9 @@
             [locale]="locale"
             [startOnSunday]="startsOnSunday"
             [shifts]="shifts"
+            [scrollWeekViewToEventOnChange]="scrollWeekViewToEventOnChange"
+            [scrollWeekViewToFirstEventOnInit]="scrollWeekViewToFirstEventOnInit"
+            [scrollWeekViewToSpecificHourOnInit]="scrollWeekViewToSpecificHourOnInit"
             [hideWeekViewDayLabel]="hideWeekViewDayLabel"
             (WeekEventClicked)="WeekEventClicked.emit($event)"
             (WeekEventRemove)="WeekEventRemove.emit($event)">

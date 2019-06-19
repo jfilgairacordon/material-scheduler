@@ -7,9 +7,9 @@
         </div>
     </div>
 </div>
-<div #timeline class="ams-week-view-timeline">
+<div #timelineScroller class="ams-week-view-timeline">
     <div class="ams-week-view-timeline-container">
-        <div class="ams-week-view-timeline-row" *ngFor="let timeDef of timeline">
+        <div class="ams-week-view-timeline-row" *ngFor="let timeDef of timeline" [id]="timeDef.hourStr">
             <div class="ams-week-view-timeline-column">
                 <div class="ams-week-view-timeline-event-content">{{timeDef.hourStr}}</div>
             </div>
