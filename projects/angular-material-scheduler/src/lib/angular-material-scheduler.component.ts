@@ -1,12 +1,14 @@
-import { Component, OnInit, Input, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { AngularMaterialSchedulerService } from './angular-material-scheduler.service';
 import { CalendarShift } from './models/shift.model';
 import { IAMSDayClicked, IAMSDayEventClicked } from './models/month-events.interface';
 import { IAMSWeekViewEventClicked, IAMSWeekViewEventRemove } from './models/week-events.interface';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'angular-material-scheduler',
     templateUrl: "./angular-material-scheduler.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrls: ['./angular-material-scheduler.component.scss']
 })
 export class AngularMaterialSchedulerComponent implements OnInit, AfterViewInit
@@ -30,7 +32,10 @@ export class AngularMaterialSchedulerComponent implements OnInit, AfterViewInit
     /**
      * Defines the array of "Events" the calendar will show.
      */
-    @Input() shifts: Array<CalendarShift>;
+    @Input() set shifts(shifts: Array<CalendarShift>)
+    {
+        this._shiftsStore.next(shifts);
+    }
 
     /**
      * Defines the date that the calendar will use. If no argument is passed through the input. It will uses Date();
@@ -79,6 +84,10 @@ export class AngularMaterialSchedulerComponent implements OnInit, AfterViewInit
      */
     @Output() WeekEventRemove = new EventEmitter<IAMSWeekViewEventRemove>();
 
+    /**
+     * Defines where the shifts will live.
+     */
+    public _shiftsStore = new BehaviorSubject<Array<CalendarShift>>([]);
     //TODO: Here I have to add support for momentjs dates.
 
     public _currentDate: Date;
@@ -88,6 +97,11 @@ export class AngularMaterialSchedulerComponent implements OnInit, AfterViewInit
 
     ngOnInit()
     {
+    }
+
+    ngOnChanges(c: any): void
+    {
+        console.log(c);
     }
 
     ngAfterViewInit()

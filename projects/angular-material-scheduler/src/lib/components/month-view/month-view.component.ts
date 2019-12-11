@@ -110,10 +110,26 @@ export class MonthViewComponent implements OnInit, OnChanges
         // date.getDay() gives us the number of whitespaces from the start to the day.
         // if we keep in mind that the week can start on sunday it will be -1.
         let startPos = firstOfMonth.getDay() - (this.startOnSunday ? -1 : 0);
+        let week = [];
+
+        // WARNING!! if the firstOfMonth.getDay() and startOnSunday equals false, the start pos is 7!
+        if (firstOfMonth.getDay() == 0 && !this.startOnSunday)
+        {
+            startPos = 7;
+        }
 
         // Fill the spaces on the week
-        let week = Array(startPos - 1);
+        week = Array(startPos - 1);
         week.fill(0, 0, startPos -1);
+
+        // Check if the start pos is at the end of the week. Then we have to push it directly into
+        // the months structure.
+        // if((startPos % 7) == 0)
+        // {
+        //     week.push(firstOfMonth);
+        //     monthStruct.push(week);
+        //     week = [];
+        // }
 
         // Let's build the structure.
         startPos-=1; // That makes easier calculate the real offset for the bucle.
