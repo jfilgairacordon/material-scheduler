@@ -131,6 +131,8 @@ export class AngularMaterialSchedulerService
     public scrollContentTo(element: Element, x: number, y: number): void
     {
         // TODO: Check if we can anim it.
-        element.scrollTo(x, y);
+        setTimeout(() => {
+            element.scrollTo(x, y);
+        }, 500);
     }
 }
