@@ -1,10 +1,28 @@
-<div class="ams-controls-holder">
-    <button mat-icon-button><mat-icon>keyboard_arrow_left</mat-icon></button>
-    <button mat-icon-button><mat-icon>keyboard_arrow_right</mat-icon></button>
-    <button mat-button class="ams-month-label">{{ getCurrentMontName() }}</button>
-</div>
+
 <div class="ams-view-wrapper">
     <ng-container [ngSwitch]="view">
-        <angular-material-scheduler-month-view [locale]="locale" [startOnSunday]="startsOnSunday" *ngSwitchCase="'month'"></angular-material-scheduler-month-view>
+        <angular-material-scheduler-week-view
+            *ngSwitchCase="'week'"
+            [date]="date"
+            [locale]="locale"
+            [startOnSunday]="startsOnSunday"
+            [shifts]="_shiftsStore.value"
+            [scrollWeekViewToEventOnChange]="scrollWeekViewToEventOnChange"
+            [scrollWeekViewToFirstEventOnInit]="scrollWeekViewToFirstEventOnInit"
+            [scrollWeekViewToSpecificHourOnInit]="scrollWeekViewToSpecificHourOnInit"
+            [hideWeekViewDayLabel]="hideWeekViewDayLabel"
+            (WeekEventClicked)="WeekEventClicked.emit($event)"
+            (WeekEventRemove)="WeekEventRemove.emit($event)">
+
+        </angular-material-scheduler-week-view>
+        <angular-material-scheduler-month-view
+            [date]="date"
+            [locale]="locale"
+            [startOnSunday]="startsOnSunday"
+            [shifts]="_shiftsStore.value"
+            *ngSwitchCase="'month'"
+            (DayClicked)="DayClicked.emit($event)"
+            (DayEventClicked)="DayEventClicked.emit($event)">
+        </angular-material-scheduler-month-view>
     </ng-container>
 </div>

@@ -1,9 +1,14 @@
-import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { AngularMaterialSchedulerService } from './angular-material-scheduler.service';
+import { CalendarShift } from './models/shift.model';
+import { IAMSDayClicked, IAMSDayEventClicked } from './models/month-events.interface';
+import { IAMSWeekViewEventClicked, IAMSWeekViewEventRemove } from './models/week-events.interface';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'angular-material-scheduler',
     templateUrl: "./angular-material-scheduler.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrls: ['./angular-material-scheduler.component.scss']
 })
 export class AngularMaterialSchedulerComponent implements OnInit, AfterViewInit
@@ -27,13 +32,62 @@ export class AngularMaterialSchedulerComponent implements OnInit, AfterViewInit
     /**
      * Defines the array of "Events" the calendar will show.
      */
-    @Input() shifts: Array<any>;
+    @Input() set shifts(shifts: Array<CalendarShift>)
+    {
+        this._shiftsStore.next(shifts);
+    }
 
     /**
      * Defines the date that the calendar will use. If no argument is passed through the input. It will uses Date();
      */
     @Input() date: Date = new Date();
 
+    /**
+     * Defines if the view has to hide the day labels (numbers below the week days).
+     * By default false.
+     */
+    @Input() hideWeekViewDayLabel: boolean = false;
+
+    /**
+     * Defines if the view has to scroll to specific hour when it fires onInit event.
+     * The input receives the specific hour as an argument.
+     */
+    @Input() scrollWeekViewToSpecificHourOnInit: number = null;
+
+    /**
+     * Defines if the view has to scroll to the first event when it fires onInit event.
+     */
+    @Input() scrollWeekViewToFirstEventOnInit: boolean = false;
+
+    /**
+     * Defines if the view has to scroll to the changed event
+     */
+    @Input() scrollWeekViewToEventOnChange: boolean = false;
+
+    /**
+     * Dispatches the dayclick event from the different views across the library.
+     */
+    @Output() DayClicked = new EventEmitter<IAMSDayClicked>();
+
+    /**
+     * Defines the event called on a specific shift.
+     */
+    @Output() DayEventClicked = new EventEmitter<IAMSDayEventClicked>();
+
+    /**
+     * Defines the event called on a specific shift.
+     */
+    @Output() WeekEventClicked = new EventEmitter<IAMSWeekViewEventClicked>();
+
+    /**
+     * Defines the event called on a specific shift's remove button.
+     */
+    @Output() WeekEventRemove = new EventEmitter<IAMSWeekViewEventRemove>();
+
+    /**
+     * Defines where the shifts will live.
+     */
+    public _shiftsStore = new BehaviorSubject<Array<CalendarShift>>([]);
     //TODO: Here I have to add support for momentjs dates.
 
     public _currentDate: Date;
@@ -43,6 +97,11 @@ export class AngularMaterialSchedulerComponent implements OnInit, AfterViewInit
 
     ngOnInit()
     {
+    }
+
+    ngOnChanges(c: any): void
+    {
+        console.log(c);
     }
 
     ngAfterViewInit()

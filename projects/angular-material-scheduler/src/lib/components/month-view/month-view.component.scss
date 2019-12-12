@@ -8,21 +8,58 @@
     display: flex;
     flex-direction: column;
     flex: 1 1 0px;
+    min-width: 50px;
+    max-width: 14.28%;
+}
+.ams-month-view-day-label{
+    display: flex;
+    flex-direction: row;
+    min-height: 15px;
+}
+.ams-month-view-day-event{
+    display: flex;
+    flex-direction: row;
+    min-height: 15px;
+    border-radius: 12px;
+    background-color: #5c6bc0;
+    color: white;
+    font-size: 11px;
+    line-height: 1.4;
+    padding: 2px;
+    margin-bottom: 4px;
+    padding-left: 6px;
+}
+.ams-month-view-day-event:hover{
+    background-color: #4a569b;
 }
 .ams-month-view-row{
     display: flex;
     flex-direction: row;
     min-height: 50px;
-    flex: 1 1 0px;
+    flex: 1 1 auto;
+    border-bottom: 1px solid #d4d4d4;
 }
 .ams-month-view-label-row{
     display: flex;
     flex-direction: row;
     min-height: 30px;
+    border-bottom: 1px solid #d4d4d4;
 }
 .ams-month-view-day-button{
     cursor: pointer;
 }
 .ams-month-view-day-button:hover{
     background-color: rgba(0, 0, 0, .04);
+}
+.ams-month-view-day-content{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 4px;
+    cursor: pointer;
+}
+.ams-month-view-day-event-label{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }

@@ -1,0 +1,85 @@
+::ng-deepangular-material-scheduler-week-view{
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0px;
+    min-height: 100%;
+}
+
+.ams-week-view-label-row{
+    display: flex;
+    flex-direction: row;
+    min-height: 50px;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.ams-week-view-day, .ams-week-view-timeline-column{
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0px;
+    min-width: 50px;
+    border-right: 1px solid #d4d4d4;
+    position: relative;
+}
+.ams-week-view-column-mar{
+    margin-left: 12px;
+}
+
+.ams-week-view-timeline{
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 0px;
+    overflow-y: auto;
+}
+.ams-week-view-timeline-container{
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+}
+.ams-week-view-timeline-row{
+    display: flex;
+    flex-direction: row;
+    min-height: 50px;
+    max-height: 50px; // Restricted by component logic.
+}
+.ams-week-view-timeline-row:nth-child(even)
+{
+    background-color: #eeeeee48;
+}
+.ams-week-view-timeline-row:nth-child(odd)
+{
+    background-color: transparent;
+}
+.ams-week-view-timeline-event{
+    position: absolute;
+    background-color: #4a569b;
+    border-radius: 12px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: white;
+    z-index: 1;
+}
+.ams-week-view-timeline-event-content{
+    margin: 6px;
+}
+.ams-pad0{
+    padding: 0!important;
+}
+.ams-week-view-event-container{
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0px;
+    min-height: 100%;
+    z-index: 1;
+    cursor: pointer;
+}
+.ams-week-view-event-remove-button{
+    visibility: hidden;
+    position: absolute;
+    right: -16px;
+    top:-16px;
+    z-index: 2;
+}
+// .ams-week-view-event-container:hover .ams-week-view-event-remove-button
+// {
+//     visibility: visible;
+// }
