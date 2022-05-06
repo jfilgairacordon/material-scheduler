@@ -1,4 +1,4 @@
-<div style="width: 100%; height: 500px; display: flex;">
+<div style="width: 100%; height: 500px; display: flex">
     <angular-material-scheduler
         [locale]="'es-es'"
         [view]="'week'"
@@ -8,18 +8,21 @@
         [scrollWeekViewToFirstEventOnInit]="false"
         [scrollWeekViewToEventOnChange]="true"
         (WeekEventClicked)="alertContent($event)"
-        (WeekEventRemove)="alertContent($event)">
+        (WeekEventRemove)="alertContent($event)"
+    >
     </angular-material-scheduler>
 </div>
-<button (click)="addNew()">Add new</button>
-<button (click)="toAugust()">Add new</button>
-<div style="width: 100%; height: 500px; display: flex;">
+<button (click)="decrease()">decrease</button>
+<button (click)="increase()">increase</button>
+<div style="width: 100%; height: 500px; display: flex">
     <angular-material-scheduler
         [locale]="'es-es'"
         [view]="'month'"
+        [date]="date.asObservable()"
         [startsOnSunday]="true"
         [shifts]="shifts"
         (DayClicked)="alertContent($event)"
-        (DayEventClicked)="alertContent($event)">
+        (DayEventClicked)="alertContent($event)"
+    >
     </angular-material-scheduler>
 </div>

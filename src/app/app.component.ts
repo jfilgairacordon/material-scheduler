@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CalendarShift } from 'angular-material-scheduler/public-api';
+import { BehaviorSubject, of, Subject } from 'rxjs';
 
 @Component({
     selector: 'app-root',
@@ -9,7 +10,11 @@ import { CalendarShift } from 'angular-material-scheduler/public-api';
 export class AppComponent
 {
     title = 'material-scheduler';
-    date = new Date(2019, 3, 1);
+    date = new BehaviorSubject<Date>(new Date());
+
+    constructor()
+    { }
+
     shifts = [
         {
             title: "Evento 1",
@@ -54,8 +59,16 @@ export class AppComponent
 
         this.shifts.push(shift)
     }
-    public toAugust(): void
+    public increase(): void
     {
-        this.date = new Date(2019, 7, 1);
+        const current = this.date.value;
+        current.setMonth(current.getMonth() + 1);
+        this.date.next(current);
+    }
+    public decrease(): void
+    {
+        const current = this.date.value;
+        current.setMonth(current.getMonth() - 1);
+        this.date.next(current);
     }
 }

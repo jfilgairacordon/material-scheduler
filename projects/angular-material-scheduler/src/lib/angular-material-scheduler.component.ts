@@ -3,7 +3,8 @@ import { AngularMaterialSchedulerService } from './angular-material-scheduler.se
 import { CalendarShift } from './models/shift.model';
 import { IAMSDayClicked, IAMSDayEventClicked } from './models/month-events.interface';
 import { IAMSWeekViewEventClicked, IAMSWeekViewEventRemove } from './models/week-events.interface';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
     selector: 'angular-material-scheduler',
@@ -40,7 +41,7 @@ export class AngularMaterialSchedulerComponent implements OnInit, AfterViewInit
     /**
      * Defines the date that the calendar will use. If no argument is passed through the input. It will uses Date();
      */
-    @Input() date: Date = new Date();
+    @Input() date: Observable<Date> = of(new Date());
 
     /**
      * Defines if the view has to hide the day labels (numbers below the week days).
@@ -93,7 +94,7 @@ export class AngularMaterialSchedulerComponent implements OnInit, AfterViewInit
     public _currentDate: Date;
 
     constructor(private ams: AngularMaterialSchedulerService)
-    {}
+    { }
 
     ngOnInit()
     {
@@ -107,15 +108,23 @@ export class AngularMaterialSchedulerComponent implements OnInit, AfterViewInit
     ngAfterViewInit()
     {
         // Check if the input value is ok.
-        if (this.date instanceof Date)
+        if (this.date)
             // Configure the current date
-            this._currentDate = this.date;
+            this.date
+                .pipe(take(1))
+                .subscribe(date => this._currentDate = date);
+        else
+        {
+            const date = new Date();
+            this.date = of(date);
+            this._currentDate = date;
+        }
     }
 
     public getCurrentMontName(): string
     {
         if (this.ams.checkIfCanUseIntlFormatter())
-            return this.ams.formatDate(this._currentDate, this.locale, {month: "long"})
+            return this.ams.formatDate(this._currentDate, this.locale, { month: "long" })
     }
 
 }
