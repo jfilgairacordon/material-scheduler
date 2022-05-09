@@ -100,11 +100,6 @@ export class AngularMaterialSchedulerComponent implements OnInit, AfterViewInit
     {
     }
 
-    ngOnChanges(c: any): void
-    {
-        console.log(c);
-    }
-
     ngAfterViewInit()
     {
         // Check if the input value is ok.
