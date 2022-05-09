@@ -42,7 +42,10 @@
               ],
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": {
+                  "scripts": true,
+                  "styles": true
+              },
               "extractCss": true,
               "namedChunks": false,
               "aot": true,
@@ -132,6 +135,10 @@
           "options": {
             "tsConfig": "projects/angular-material-scheduler/tsconfig.lib.json",
             "project": "projects/angular-material-scheduler/ng-package.json"
+          },
+          "configurations": {
+              "dev": {
+              }
           }
         },
         "test": {

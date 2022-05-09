@@ -85,9 +85,14 @@ export class MonthViewComponent implements OnInit, OnDestroy
      * @param date 
      * @param shifts 
      */
-    public DayClickedOnView(date: Date, shifts: Array<CalendarShift>): void
+    public DayClickedOnView(date: Date): void
     {
-        this.DayClicked.emit({ date: date, shifts: shifts });
+        if (date)
+        {
+            const shifts = this.ams.findShiftsForSpecificDay(date, this.shifts);
+
+            this.DayClicked.emit({ date: date, shifts: shifts });
+        }
     }
     /**
      * Dispatches the DayEventClick event from the month view.
@@ -131,15 +136,6 @@ export class MonthViewComponent implements OnInit, OnDestroy
         // Fill the spaces on the week
         week = Array(startPos - 1);
         week.fill(0, 0, startPos - 1);
-
-        // Check if the start pos is at the end of the week. Then we have to push it directly into
-        // the months structure.
-        // if((startPos % 7) == 0)
-        // {
-        //     week.push(firstOfMonth);
-        //     monthStruct.push(week);
-        //     week = [];
-        // }
 
         // Let's build the structure.
         startPos -= 1; // That makes easier calculate the real offset for the bucle.
